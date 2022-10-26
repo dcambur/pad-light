@@ -5,7 +5,9 @@ defmodule Rtp.Listener do
   use GenServer
 
   @restart_time 3000
-
+  @engagement_type :engagement
+  @sentiment_type :sentiment
+  @panic :panic
   def start_link(url) do
     GenServer.start_link(__MODULE__, url)
   end
@@ -18,13 +20,28 @@ defmodule Rtp.Listener do
   end
 
   @doc """
-  processes incoming info and sends the main data to dispatcher process
+  processes incoming info and sends it to workers from poolboy
   """
   def handle_info(%HTTPoison.AsyncChunk{chunk: chunk}, url) do
     [type, tweet] = Rtp.Utils.TweetParser.process(chunk)
-    IO.inspect(type)
-    IO.inspect(tweet)
-    Process.sleep(2000)
+
+
+    engagement_pid = :poolboy.checkout(@engagement_type)
+    sentiment_pid = :poolboy.checkout(@sentiment_type)
+
+    GenServer.call(engagement_pid, [type, tweet])
+    GenServer.call(sentiment_pid, [type, tweet])
+
+    # will synchroniously stop poolboy workers
+    # in case of panic message
+    if (type == @panic) do
+      GenServer.stop(engagement_pid)
+      GenServer.stop(sentiment_pid)
+    end
+
+    # scaling still needs to be done even in case of panic
+    :poolboy.checkin(@engagement_type, engagement_pid)
+    :poolboy.checkin(@sentiment_type, sentiment_pid)
 
     {:noreply, url}
   end

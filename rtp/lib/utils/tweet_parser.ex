@@ -3,6 +3,7 @@ defmodule Rtp.Utils.TweetParser do
   utility module for processing SSE strings into
   key-value data structure in Elixir
   """
+  alias Rtp.Utils.Tweet, as: Tweet
 
   @event_ok "event: \"message\"\n\ndata: "
   @event_panic "event: \"message\"\n\ndata: {\"message\": panic}\n\n"
