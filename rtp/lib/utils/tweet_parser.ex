@@ -9,7 +9,6 @@ defmodule Rtp.Utils.TweetParser do
   @event_panic "event: \"message\"\n\ndata: {\"message\": panic}\n\n"
   @panic_msg %{error: "Panic! Worker terminates forcefully."}
 
-
   @message "message"
   @tweet "tweet"
   @retweeted_status "retweeted_status"
@@ -27,7 +26,8 @@ defmodule Rtp.Utils.TweetParser do
         |> sse_to_dict()
         |> give_message()
 
-      true -> [nil, nil]
+      true ->
+        [nil, nil]
     end
   end
 
@@ -44,29 +44,41 @@ defmodule Rtp.Utils.TweetParser do
   end
 
   defp give_tweet(message) do
-    [:tweet, %Tweet{
-      id: String.to_atom(message[@message][@tweet]["id_str"]),
-      created_at: message[@message][@tweet]["created_at"],
-      text: message[@message][@tweet]["text"],
-      username:  message[@message][@tweet][@user]["name"],
-      retweet_count: message[@message][@tweet]["retweet_count"],
-      favorite_count: message[@message][@tweet]["favorite_count"],
-      from_retweet: false,
-      sink_ready: false
-    }]
+    [
+      :tweet,
+      %Tweet{
+        id: String.to_atom(message[@message][@tweet]["id_str"]),
+        created_at: message[@message][@tweet]["created_at"],
+        text: message[@message][@tweet]["text"],
+        username: message[@message][@tweet][@user]["name"],
+        followers_count: message[@message][@tweet][@user]["followers_count"],
+        retweet_count: message[@message][@tweet]["retweet_count"],
+        favorite_count: message[@message][@tweet]["favorite_count"],
+        from_retweet: false,
+        sink_ready: false,
+        sentiment: 0,
+        engagement: 0
+      }
+    ]
   end
 
   defp give_retweet(message) do
-    [:tweet, %Tweet{
-      id: String.to_atom(message[@message][@tweet][@retweeted_status]["id_str"]),
-      created_at: message[@message][@tweet][@retweeted_status]["created_at"],
-      text: message[@message][@tweet][@retweeted_status]["text"],
-      username:  message[@message][@tweet][@retweeted_status][@user]["name"],
-      retweet_count: message[@message][@tweet][@retweeted_status]["retweet_count"],
-      favorite_count: message[@message][@tweet][@retweeted_status]["favorite_count"],
-      from_retweet: true,
-      sink_ready: false
-    }]
+    [
+      :tweet,
+      %Tweet{
+        id: String.to_atom(message[@message][@tweet][@retweeted_status]["id_str"]),
+        created_at: message[@message][@tweet][@retweeted_status]["created_at"],
+        text: message[@message][@tweet][@retweeted_status]["text"],
+        username: message[@message][@tweet][@retweeted_status][@user]["name"],
+        followers_count: message[@message][@tweet][@retweeted_status][@user]["followers_count"],
+        retweet_count: message[@message][@tweet][@retweeted_status]["retweet_count"],
+        favorite_count: message[@message][@tweet][@retweeted_status]["favorite_count"],
+        from_retweet: true,
+        sink_ready: false,
+        sentiment: 0,
+        engagement: 0
+      }
+    ]
   end
 
   defp give_panic() do

@@ -25,7 +25,6 @@ defmodule Rtp.Listener do
   def handle_info(%HTTPoison.AsyncChunk{chunk: chunk}, url) do
     [type, tweet] = Rtp.Utils.TweetParser.process(chunk)
 
-
     engagement_pid = :poolboy.checkout(@engagement_type)
     sentiment_pid = :poolboy.checkout(@sentiment_type)
 
@@ -34,7 +33,7 @@ defmodule Rtp.Listener do
 
     # will synchroniously stop poolboy workers
     # in case of panic message
-    if (type == @panic) do
+    if type == @panic do
       GenServer.stop(engagement_pid)
       GenServer.stop(sentiment_pid)
     end

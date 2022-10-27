@@ -17,7 +17,6 @@ defmodule Rtp.Super do
   @aggregator :aggregator
   @sink :sink
 
-
   @doc """
   runs the main supervisor
   """
@@ -33,7 +32,7 @@ defmodule Rtp.Super do
       Supervisor.child_spec({Rtp.Aggregator, @aggregator}, id: @aggregator),
       Supervisor.child_spec({Rtp.Sink, @sink}, id: @sink),
       :poolboy.child_spec(@engagement_type, e_poolboy_config()),
-      :poolboy.child_spec(@sentiment_type, s_poolboy_config()),
+      :poolboy.child_spec(@sentiment_type, s_poolboy_config())
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

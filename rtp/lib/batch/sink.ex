@@ -1,5 +1,4 @@
 defmodule Rtp.Sink do
-
   use GenServer
 
   def start_link(name) do
@@ -11,6 +10,7 @@ defmodule Rtp.Sink do
   end
 
   def handle_call([:batch_write, batch], _from, _state) do
+    IO.inspect(batch)
     {:reply, :ok, nil}
   end
 end

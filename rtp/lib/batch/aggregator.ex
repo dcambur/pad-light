@@ -17,7 +17,6 @@ defmodule Rtp.Aggregator do
   end
 
   def handle_call([:batch, tweet], _from, tweet_map) when not is_map_key(tweet_map, tweet.id) do
-
     tweet_map = Map.put(tweet_map, tweet.id, tweet)
 
     {:reply, :ok, tweet_map}

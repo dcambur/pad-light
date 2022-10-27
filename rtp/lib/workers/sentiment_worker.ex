@@ -12,7 +12,7 @@ defmodule Rtp.Sentiment do
     {:ok, nil}
   end
 
-  def handle_call([:tweet, tweet], _from,  _state) do
+  def handle_call([:tweet, tweet], _from, _state) do
     GenServer.call(@aggregator, [:batch, tweet])
 
     Enum.random(@worker_idle)
@@ -21,7 +21,7 @@ defmodule Rtp.Sentiment do
     {:reply, :ok, _state}
   end
 
-  def handle_call([:panic, tweet], _from,  _state) do
+  def handle_call([:panic, tweet], _from, _state) do
     IO.inspect("#{inspect(tweet)} -> #{inspect(self())}")
 
     Enum.random(@worker_idle)

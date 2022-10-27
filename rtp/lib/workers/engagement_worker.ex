@@ -5,6 +5,14 @@ defmodule Rtp.Engagement do
   @worker_idle 50..500
   @aggregator :aggregator
 
+  defp calculate_engagement(favorites, retweets, followers) when followers != 0 do
+    (favorites + retweets) / followers
+  end
+
+  defp calculate_engagement(favorites, retweets, followers) when followers == 0 do
+    0.0
+  end
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, nil)
   end
@@ -13,7 +21,15 @@ defmodule Rtp.Engagement do
     {:ok, nil}
   end
 
-  def handle_call([:tweet, tweet], _from,  _state) do
+  def handle_call([:tweet, tweet], _from, _state) do
+    engagement =
+      calculate_engagement(
+        tweet.favorite_count,
+        tweet.retweet_count,
+        tweet.followers_count
+      )
+
+    tweet = %{tweet | engagement: engagement}
     GenServer.call(@aggregator, [:batch, tweet])
 
     Enum.random(@worker_idle)
@@ -22,7 +38,7 @@ defmodule Rtp.Engagement do
     {:reply, :ok, _state}
   end
 
-  def handle_call([:panic, tweet], _from,  _state) do
+  def handle_call([:panic, tweet], _from, _state) do
     IO.inspect("#{inspect(tweet)} -> #{inspect(self())}")
 
     Enum.random(@worker_idle)
