@@ -1,7 +1,9 @@
 defmodule Rtp.Engagement do
   use GenServer
+  require GenServer
 
   @worker_idle 50..500
+  @aggregator :aggregator
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, nil)
@@ -12,8 +14,7 @@ defmodule Rtp.Engagement do
   end
 
   def handle_call([:tweet, tweet], _from,  _state) do
-
-    IO.inspect(tweet)
+    GenServer.call(@aggregator, [:batch, tweet])
 
     Enum.random(@worker_idle)
     |> Process.sleep()

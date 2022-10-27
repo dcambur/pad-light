@@ -45,26 +45,27 @@ defmodule Rtp.Utils.TweetParser do
 
   defp give_tweet(message) do
     [:tweet, %Tweet{
-      id: message[@message][@tweet]["id"],
+      id: String.to_atom(message[@message][@tweet]["id_str"]),
       created_at: message[@message][@tweet]["created_at"],
       text: message[@message][@tweet]["text"],
       username:  message[@message][@tweet][@user]["name"],
       retweet_count: message[@message][@tweet]["retweet_count"],
       favorite_count: message[@message][@tweet]["favorite_count"],
-      from_retweet: false
+      from_retweet: false,
+      sink_ready: false
     }]
   end
 
   defp give_retweet(message) do
     [:tweet, %Tweet{
-      id: message[@message][@tweet][@retweeted_status]["id"],
+      id: String.to_atom(message[@message][@tweet][@retweeted_status]["id_str"]),
       created_at: message[@message][@tweet][@retweeted_status]["created_at"],
       text: message[@message][@tweet][@retweeted_status]["text"],
       username:  message[@message][@tweet][@retweeted_status][@user]["name"],
       retweet_count: message[@message][@tweet][@retweeted_status]["retweet_count"],
       favorite_count: message[@message][@tweet][@retweeted_status]["favorite_count"],
-      from_retweet: true
-
+      from_retweet: true,
+      sink_ready: false
     }]
   end
 

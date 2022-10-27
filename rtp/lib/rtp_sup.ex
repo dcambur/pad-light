@@ -14,6 +14,10 @@ defmodule Rtp.Super do
   @engagement_type :engagement
   @sentiment_type :sentiment
 
+  @aggregator :aggregator
+  @sink :sink
+
+
   @doc """
   runs the main supervisor
   """
@@ -26,8 +30,10 @@ defmodule Rtp.Super do
 
     children = [
       Supervisor.child_spec({Rtp.Listener.Super, [@tweet1, @tweet2]}, id: @listener_sup),
+      Supervisor.child_spec({Rtp.Aggregator, @aggregator}, id: @aggregator),
+      Supervisor.child_spec({Rtp.Sink, @sink}, id: @sink),
       :poolboy.child_spec(@engagement_type, e_poolboy_config()),
-      :poolboy.child_spec(@sentiment_type, s_poolboy_config())
+      :poolboy.child_spec(@sentiment_type, s_poolboy_config()),
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
