@@ -10,7 +10,7 @@ defmodule Rtp.Sink do
   end
 
   def handle_call([:batch_write, batch], _from, _state) do
-    IO.inspect(batch)
+    #IO.inspect(batch)
     {:reply, :ok, nil}
   end
 end

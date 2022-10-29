@@ -21,7 +21,7 @@ defmodule Rtp.Engagement do
     {:ok, nil}
   end
 
-  def handle_call([:tweet, tweet], _from, _state) do
+  def handle_cast([:tweet, tweet], _state) do
     engagement =
       calculate_engagement(
         tweet.favorite_count,
@@ -30,20 +30,20 @@ defmodule Rtp.Engagement do
       )
 
     tweet = %{tweet | engagement: engagement}
-    GenServer.call(@aggregator, [:batch, tweet])
+    GenServer.cast(@aggregator, [:batch, tweet])
 
     Enum.random(@worker_idle)
     |> Process.sleep()
 
-    {:reply, :ok, _state}
+    {:noreply, _state}
   end
 
-  def handle_call([:panic, tweet], _from, _state) do
+  def handle_cast([:panic, tweet], _state) do
     IO.inspect("#{inspect(tweet)} -> #{inspect(self())}")
 
     Enum.random(@worker_idle)
     |> Process.sleep()
 
-    {:reply, :ok, _state}
+    {:noreply, _state}
   end
 end

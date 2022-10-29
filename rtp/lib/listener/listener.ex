@@ -28,8 +28,8 @@ defmodule Rtp.Listener do
     engagement_pid = :poolboy.checkout(@engagement_type)
     sentiment_pid = :poolboy.checkout(@sentiment_type)
 
-    GenServer.call(engagement_pid, [type, tweet])
-    GenServer.call(sentiment_pid, [type, tweet])
+    GenServer.cast(engagement_pid, [type, tweet])
+    GenServer.cast(sentiment_pid, [type, tweet])
 
     # will synchroniously stop poolboy workers
     # in case of panic message

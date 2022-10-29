@@ -29,4 +29,12 @@ defmodule Rtp.Utils.Tweet do
   def set_sink_ready(tweet) do
     tweet |> struct(%{sink_ready: true})
   end
+
+  def set_sentiment(tweet, sentiment) do
+    tweet |> struct(%{sentiment: sentiment})
+  end
+
+  def set_engagement(tweet, engagement) do
+    tweet |> struct(%{engagement: engagement})
+  end
 end

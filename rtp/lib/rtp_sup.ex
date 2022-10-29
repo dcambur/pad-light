@@ -8,6 +8,7 @@ defmodule Rtp.Super do
 
   @tweet1 "http://127.0.0.1:4000/tweets/1"
   @tweet2 "http://127.0.0.1:4000/tweets/2"
+  @emotion_url "http://localhost:4000/emotion_values"
 
   @listener_sup :listener_sup
 
@@ -26,13 +27,14 @@ defmodule Rtp.Super do
 
   def init([]) do
     IO.puts("main supervisor starts up...")
+    emotion_dict = HTTPoison.get!(@emotion_url).body |> Rtp.Utils.EmotionParser.process()
 
     children = [
       Supervisor.child_spec({Rtp.Listener.Super, [@tweet1, @tweet2]}, id: @listener_sup),
       Supervisor.child_spec({Rtp.Aggregator, @aggregator}, id: @aggregator),
       Supervisor.child_spec({Rtp.Sink, @sink}, id: @sink),
       :poolboy.child_spec(@engagement_type, e_poolboy_config()),
-      :poolboy.child_spec(@sentiment_type, s_poolboy_config())
+      :poolboy.child_spec(@sentiment_type, s_poolboy_config(), emotion_dict)
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
@@ -42,8 +44,10 @@ defmodule Rtp.Super do
     [
       name: {:local, @engagement_type},
       worker_module: Rtp.Engagement,
-      size: 10,
-      max_overflow: 100
+      size: 15,
+      max_overflow: 0,
+      strategy: :fifo
+
     ]
   end
 
@@ -51,8 +55,9 @@ defmodule Rtp.Super do
     [
       name: {:local, @sentiment_type},
       worker_module: Rtp.Sentiment,
-      size: 10,
-      max_overflow: 100
+      size: 15,
+      max_overflow: 0,
+      strategy: :fifo
     ]
   end
 end
