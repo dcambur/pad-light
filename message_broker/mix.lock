@@ -1,0 +1,6 @@
+%{
+  "json": {:hex, :json, "1.4.1", "8648f04a9439765ad449bc56a3ff7d8b11dd44ff08ffcdefc4329f7c93843dfa", [:mix], [], "hexpm", "9abf218dbe4ea4fcb875e087d5f904ef263d012ee5ed21d46e9dbca63f053d16"},
+  "jsx": {:hex, :jsx, "3.1.0", "d12516baa0bb23a59bb35dccaf02a1bd08243fcbb9efe24f2d9d056ccff71268", [:rebar3], [], "hexpm", "0c5cc8fdc11b53cc25cf65ac6705ad39e54ecc56d1c22e4adb8f5a53fb9427f3"},
+  "msgpax": {:hex, :msgpax, "2.3.0", "14f52ad249a3f77b5e2d59f6143e6c18a6e74f34666989e22bac0a465f9835cc", [:mix], [{:plug, "~> 1.0", [hex: :plug, repo: "hexpm", optional: true]}], "hexpm", "65c36846a62ed5615baf7d7d47babb6541313a6c0b6d2ff19354bd518f52df7e"},
+  "poison": {:hex, :poison, "5.0.0", "d2b54589ab4157bbb82ec2050757779bfed724463a544b6e20d79855a9e43b24", [:mix], [{:decimal, "~> 2.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "11dc6117c501b80c62a7594f941d043982a1bd05a1184280c0d9166eb4d8d3fc"},
+}
