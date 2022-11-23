@@ -4,7 +4,7 @@ defmodule Rtp.Aggregator do
 
   @sink :sink
 
-  @batch_size 256
+  @batch_size 1
   @timeframe 2000
 
   def start_link(name) do
@@ -31,8 +31,11 @@ defmodule Rtp.Aggregator do
     tweet_map = update_map(tweet, tweet_map)
 
     to_sink = Map.filter(tweet_map, fn {_key, val} -> val.sink_ready == true end)
+    ready_count = Enum.count(to_sink)
 
-    {:noreply, tweet_map}
+    left = sink_batch(tweet_map, to_sink, ready_count)
+
+    {:noreply, left}
   end
 
   defp update_map(tweet, tweet_map) when tweet.engagement != 0 do

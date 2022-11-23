@@ -1,9 +1,9 @@
-defmodule Rtp.MixProject do
+defmodule TcpClient.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :rtp,
+      app: :tcp_client,
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -14,7 +14,7 @@ defmodule Rtp.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {Rtp, []},
+      mod: {Client, []},
       extra_applications: [:logger]
     ]
   end
@@ -24,11 +24,6 @@ defmodule Rtp.MixProject do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-      {:httpoison, "~> 1.8"},
-      {:poison, "~> 5.0"},
-      {:poolboy, "~> 1.5"},
-      {:jsx, "~> 3.1"},
-      {:jason, "~> 1.4"}
     ]
   end
 end

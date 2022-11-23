@@ -9,7 +9,7 @@ defmodule MBroker.Tcp.Server do
 
   def init(port) do
     {:ok, socket} =
-      :gen_tcp.listen(port, [:binary, packet: :line, active: true, reuseaddr: true])
+    :gen_tcp.listen(port, [ :binary, packet: 4, active: :once, reuseaddr: true])
 
     Logger.info("Accepting connections on port #{port}")
 
@@ -23,7 +23,6 @@ defmodule MBroker.Tcp.Server do
         {:ok, pid} = GenServer.start(MBroker.Tcp.Connect, socket: client_socket)
         :gen_tcp.controlling_process(client_socket, pid)
       {:error, reason} -> {:stop, :normal, socket}
-
     end
     accept(socket)
   end
